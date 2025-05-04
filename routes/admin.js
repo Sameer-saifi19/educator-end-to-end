@@ -7,7 +7,7 @@ const {adminModel} = require('../db');
 adminRouter.post('/signup',async function(req, res){
     
     const requiredbody = z.object({
-        name: z.string().min(3),
+        fullName: z.string().min(3),
         email: z.string().email(),
         password: z.string().min(8),
     })
@@ -22,13 +22,13 @@ adminRouter.post('/signup',async function(req, res){
         return
     }
     
-    const { name, email, password } = req.body;
+    const { fullName, email, password } = req.body;
 
     const hashedPassword = await bcrypt.hash(password,5)
 
     try {
         await adminModel.create({
-            name: name,
+            fullName: fullName,
             email: email,
             password: hashedPassword,
         })
