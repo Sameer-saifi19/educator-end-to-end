@@ -1,6 +1,8 @@
 const { Router }  = require('express');
 const adminRouter = Router();
-const {adminModel} = require('../db')
+const bcrypt = require('bcrypt');
+const { z } = require('zod');
+const {adminModel} = require('../db');
 
 adminRouter.post('/signup',async function(req, res){
     
