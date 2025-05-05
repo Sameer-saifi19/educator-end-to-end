@@ -4,7 +4,8 @@ const bcrypt = require("bcrypt");
 const { z } = require("zod");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
-const { adminModel } = require("../db");
+const { adminModel, courseModel } = require("../db");
+const adminMiddleware = require("../middleware/admin");
 
 const adminSecret = process.env.JWT_ADMIN_SECRET;
 
@@ -74,7 +75,7 @@ adminRouter.post("/signin", async function (req, res) {
       return;
     }
 
-    const isPasswordCorrect =await bcrypt.compare(password, admin.password);
+    const isPasswordCorrect = bcrypt.compare(password, admin.password);
 
     if (!isPasswordCorrect) {
       res.status(401).json({
@@ -104,11 +105,28 @@ adminRouter.post("/signin", async function (req, res) {
 
 });
 
-adminRouter.post("/create", function (req, res) {
+
+adminRouter.post("/create", adminMiddleware, async function (req, res) {
+  const adminId = req.userId;
+
+  const { title, description, price, imageUrl } = req.body;
+
+  const course = await courseModel.create({
+    title: title,
+    description: description,
+    price: price,
+    imageUrl: imageUrl,
+    creatorId: adminId
+  })
+
   res.json({
-    message: "purchases endpoint",
-  });
+    message:"course Created",
+    CourseId: course._id
+  })
+
 });
+
+
 adminRouter.put("/update", function (req, res) {
   res.json({
     message: "purchases endpoint",

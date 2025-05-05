@@ -73,7 +73,7 @@ userRouter.post('/signin',async function(req, res){
           return;
         }
     
-        const isPasswordCorrect = bcrypt.compare(password, user.password);
+        const isPasswordCorrect =await bcrypt.compare(password, user.password);
     
         if (!isPasswordCorrect) {
           res.status(401).json({
